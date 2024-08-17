@@ -2,7 +2,9 @@ import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/material.dart';
 
 class NewExpense extends StatefulWidget {
-  const NewExpense({super.key});
+  const NewExpense({required this.onAddNewExpense, super.key});
+
+  final void Function(Expense expense) onAddNewExpense;
 
   @override
   State<NewExpense> createState() {
@@ -38,8 +40,8 @@ class _NewExpenseState extends State<NewExpense> {
   }
 
   void _submitExpenseData() {
-    final _enteredAmount = double.tryParse(_amountController.text);
-    final amountIsInvalid = _enteredAmount == null || _enteredAmount <= 0;
+    final enteredAmount = double.tryParse(_amountController.text);
+    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
 
     if (_titleController.text.trim().isEmpty ||
         amountIsInvalid ||
@@ -62,6 +64,15 @@ class _NewExpenseState extends State<NewExpense> {
       );
       return;
     }
+
+    widget.onAddNewExpense(
+      Expense(
+          title: _titleController.text,
+          amount: enteredAmount,
+          date: _selectedDate!,
+          category: _selectedCategory),
+    );
+    Navigator.pop(context);
   }
 
   @override
